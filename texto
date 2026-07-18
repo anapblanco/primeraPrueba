@@ -1,0 +1,11 @@
+/*
+cc  -Wall -Wextra -std=c99 -I/usr/include/x86_64-linux-gnu  -c main.c -o main.o
+cc  -Wall -Wextra -std=c99 -c game.c -o game.o
+cc  -Wall -Wextra -std=c99 -I/usr/include/x86_64-linux-gnu  -c allegroFrontend.c -o allegroFrontend.o
+allegroFrontend.c:25:10: fatal error: entities.h: No such file or directory
+   25 | #include "entities.h"
+      |          ^~~~~~~~~~~~
+compilation terminated.
+make: *** [makefile:32: allegroFrontend.o] Error 1
+
+*/
