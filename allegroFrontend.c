@@ -23,6 +23,7 @@
 #include "frontend.h"   
 #include "game.h"
 #include "entities.h"
+#include "config.h"
 
 
   
@@ -34,16 +35,14 @@
 //Variables locales
 static ALLEGRO_EVENT_QUEUE *queue = NULL;
 static ALLEGRO_DISPLAY* display;
-static ALLEGRO_BITMAP* floater = NULL;
+static ALLEGRO_BITMAP* floater_trunk = NULL;
 static ALLEGRO_BITMAP* car = NULL;
 static ALLEGRO_BITMAP* truck = NULL;
 static ALLEGRO_BITMAP* frog = NULL;
-static ALLEGRO_BITMAP* game_over = NULL;
-static ALLEGRO_BITMAP* victory = NULL;
-static ALLEGRO_BITMAP* main_menu = NULL;
 static ALLEGRO_BITMAP* pause_img = NULL;
 static ALLEGRO_BITMAP* skull = NULL;
 static ALLEGRO_BITMAP* trophy = NULL;
+static ALLEGRO_BITMAP* heart = NULL;
 
 
 static ALLEGRO_FONT* very_big_font = NULL;
@@ -63,6 +62,7 @@ static void drawGameOver (Game* p2game);
 static void drawPaused (Game* p2game);
 static void drawVictory(Game* p2game);
 static void drawScore(Game* p2game);
+static void drawLives(Game* p2game);
 //static void drawTop10 (Game* p2game);
 
 
@@ -190,6 +190,7 @@ void frontendRender(Game * game){
     drawObstacles(game);
     drawFrog(game);
     drawScore(game);
+    drawLives(game);
     break;
 
     case GAME_OVER:
@@ -226,7 +227,7 @@ void frontendDestroy(void){
     if (trophy) al_destroy_bitmap(trophy);
     if (skull) al_destroy_bitmap(skull);
     if (frog) al_destroy_bitmap(frog);
-    if (floater) al_destroy_bitmap(floater);
+    if (floater_trunk) al_destroy_bitmap(floater_trunk);
     if (pause_img) al_destroy_bitmap(pause_img);
 
     
@@ -284,7 +285,7 @@ static void drawZones(Game * p2game){
 
 
 static void drawObstacles( Game* p2game){
-    int i, x, y, new_lenght, new_height,r_disp,r_disp2;
+    int i, x, y, new_lenght, new_height,r_disp,r_disp2, space = 10;
     int flag_direction = 0; //flag para rotar el dibujo
 
     //Bucle generador de vehículos
@@ -303,10 +304,10 @@ static void drawObstacles( Game* p2game){
             }
 
             if (p2game -> entities.obstacles[i].length == CAR_LENGTH){
-                al_draw_bitmap(car, x, y, flag_direction);
+                al_draw_scaled_bitmap(car, 0, 0, al_get_bitmap_width(car), al_get_bitmap_height(car), x, y, al_get_bitmap_width(car)-space, al_get_bitmap_height(car)-space, flag_direction);
             }
             else { //es camión
-                al_draw_bitmap(truck, x, y, flag_direction);
+                al_draw_scaled_bitmap(truck, 0, 0, al_get_bitmap_width(truck), al_get_bitmap_height(truck), x, y, al_get_bitmap_width(truck)-4*space, al_get_bitmap_height(truck)-4*space, flag_direction);
             }
         }
 
@@ -322,8 +323,8 @@ static void drawObstacles( Game* p2game){
             new_height = SCALE;
           
             //Dibujamos el tronco con el largo correspondiente
-            al_draw_scaled_bitmap(floater, 0, 0, al_get_bitmap_width(floater),
-                al_get_bitmap_height(floater), x, y, new_lenght, new_height, 0);
+            al_draw_scaled_bitmap(floater_trunk, 0, 0, al_get_bitmap_width(floater_trunk),
+                al_get_bitmap_height(floater_trunk), x, y, new_lenght, new_height, 0);
         }
 
     }
@@ -333,12 +334,13 @@ static void drawObstacles( Game* p2game){
 static void drawFrog(Game * p2game){
     int x = (p2game -> frog.x)*SCALE + MARGIN;
     int y = ROW((p2game -> frog.y))*SCALE;
-    al_draw_bitmap (frog, x, y, 0);
+    int space = 35;
+    al_draw_scaled_bitmap (frog, 0, 0,al_get_bitmap_width(frog), al_get_bitmap_height(frog), x, y, al_get_bitmap_width(frog)-space, al_get_bitmap_height(frog)-space, 0);
 }
 
 
 static void loadFiles (void){
-    floater = al_load_bitmap("floater.png");
+    floater_trunk = al_load_bitmap("floater_trunk.png");
     car = al_load_bitmap("car.png");
     printf("car=%p\n", car);
     truck = al_load_bitmap("truck.png");
@@ -348,6 +350,7 @@ static void loadFiles (void){
     skull = al_load_bitmap("skull.png");
     trophy = al_load_bitmap("trophy.png");
     pause_img =al_load_bitmap("pause.png");
+    heart = al_load_bitmap("heart.png");
     if(skull == NULL) printf("skull.png no cargado\n");
     if(pause_img == NULL) printf("pause.png no cargado\n");
     if(trophy == NULL) printf("trophy.png no cargado\n");
@@ -470,7 +473,7 @@ static void drawPaused (Game* p2game){
     int option_selected = (p2game -> state.paused.selected);
     int spacing1 = 180;
     int spacing2 = 100;
-    int y_title = 400;
+    int y_title = 500;
     int y_options = y_title + spacing1;
     int x_options;
     int x_center =MARGIN + (SCALE*MAP_WIDTH)/2; //el medio de la pantalla
@@ -503,7 +506,15 @@ static void drawScore(Game* p2game){
     al_draw_text(small_font, white, spacing, spacing, ALLEGRO_ALIGN_LEFT, score_as_string);
 }
 
-statc void drawLives
+//NO ANDA EL DIBUJO DE VIDAS, NO SE MUESTRA NADA
+static void drawLives(Game* p2game){
+    int text_height = al_get_font_line_height(small_font);
+    int i, spacing = 30;
+    int lives = (p2game->lives);
+    for (i=0 ; i<lives ; i++){
+        al_draw_scaled_bitmap(heart, 0, 0, (MAP_WIDTH+1)*SCALE - (i+1)*spacing, spacing + text_height, (MAP_WIDTH+1)*SCALE - spacing, spacing + text_height, text_height, text_height, 0);
+    }
+}
 
 
 
