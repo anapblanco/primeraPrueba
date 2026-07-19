@@ -1,6 +1,6 @@
 #include "frontend.h"
 #include "game.h"
-
+#include <allegro5/allegro.h>
 int main(void)
 {
     Game game = {0};

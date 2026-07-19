@@ -38,6 +38,7 @@ static Level level1={
         {NULL, WATER, 2, MEDIUM, MEDIUM_GAP, SLOW, DIR_RIGHT},
         {NULL, WATER, 2, LARGE, MEDIUM_GAP, SLOW, DIR_LEFT},
 
+        {NULL, SAFE, 0, 0, 0, 0, DIR_LEFT},
         {NULL, SAFE, 0, 0, 0, 0, DIR_LEFT}
     }
 };

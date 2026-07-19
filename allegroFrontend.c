@@ -28,7 +28,7 @@
   
 //VAN EN EL .H O EN EL .C??
 #define SCALE 100
-#define MARGIN 0
+#define MARGIN 60
 #define ROW(r) ((MAP_HEIGHT) - r)
 
 //Variables locales
@@ -248,16 +248,15 @@ static void drawZones(Game * p2game){
     ALLEGRO_COLOR road_colour = al_map_rgb(45, 45, 48);
     ALLEGRO_COLOR water_colour = al_map_rgb(0, 119, 190);
     ALLEGRO_COLOR safe_colour = al_map_rgb(46, 139, 87);
-    int r, c, r_disp, backend_row;
+    int r, c, r_disp;
 
 
-    for (i=0 ; i<=MAP_HEIGHT ; i++){
-        backend_row = (i < MAP_HEIGHT) ? i : (MAP_HEIGHT - 1);
+    for (i=0 ; i <= MAP_HEIGHT ; i++){
         r_disp = ROW(i);
-        y1 = i*SCALE;
+        y1 = r_disp*SCALE;
         y2 = y1 + SCALE;
 
-        switch (((p2game->level).rows[backend_row]).zone){
+        switch (((p2game->level).rows[i]).zone){
             case ROAD:
             al_draw_filled_rectangle(x1, y1, x2, y2, road_colour);
             break;
