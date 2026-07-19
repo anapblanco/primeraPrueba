@@ -6,7 +6,7 @@ LDFLAGS ?=
 PKG_CONFIG ?= pkg-config
 TARGET := frogger
  
-SRCS := main.c game.c entities.c interactions.c levels.c allegroFrontend.c
+SRCS := main.c game.c entities.c interactions.c levels.c allegroFrontend.c top10.c
 OBJS := $(SRCS:.c=.o)
  
 ALLEGRO_PKGS := allegro-5 allegro_main-5 allegro_font-5 allegro_ttf-5 allegro_image-5 allegro_audio-5 allegro_primitives-5

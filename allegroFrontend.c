@@ -67,35 +67,24 @@ static void drawLives(Game* p2game);
 
 
 void frontendInit(void) {
-  printf("1\n");
 
     if (al_init() == false) {
         printf("Fallo al_init\n");
         return;
     }
 
-    printf("2\n");
-
     al_set_new_display_flags(ALLEGRO_WINDOWED);
 
-    printf("sizeof(void*) = %zu\n", sizeof(void*));
-
     display = al_create_display(MAP_WIDTH*SCALE + 2*MARGIN, (MAP_HEIGHT+1)*SCALE);
-
-    printf("3\n");
 
     if (display == NULL) {
         printf("Display NULL\n");
         return;
     }
 
-    printf("4\n");
-
     if (al_install_keyboard() == false) {
         printf("Fallo teclado\n");
     }
-
-    printf("5\n");
 
     if (al_init_image_addon() == false) {
         printf("Fallo image addon\n");
@@ -105,40 +94,23 @@ void frontendInit(void) {
         printf("Fallo image addon\n");
     }
 
-    printf("6\n");
-
     if (al_install_audio() == false) {
         printf("Fallo audio\n");
     }
-
-    printf("7\n");
 
     if (al_init_font_addon() == false) {
         printf("Fallo font addon\n");
     }
 
-    printf("8\n");
-
     al_init_ttf_addon();
-
-    printf("9\n");
 
     queue = al_create_event_queue();
 
-    printf("10\n");
-
     al_register_event_source(queue, al_get_keyboard_event_source());
-
-    printf("11\n");
 
     al_register_event_source(queue, al_get_display_event_source(display));
 
-    printf("12\n");
-
     loadFiles();
-
-    printf("13\n");
-
 }
 
 
@@ -548,3 +520,23 @@ static void drawLives(Game* p2game){
     al_draw_text(medium_font, color, x, y, ALLEGRO_ALIGN_LEFT, "Exit");
 
 }*/
+
+/* del codigo de ana
+option = (game->state).points.selected;			
+switch (option) {	
+    case POINTS_TITLE:
+        drawMSG(msgs_arr[MSG_TOP_10]);
+    break;
+    
+    case POINT_1: case POINT_2: case POINT_3: case POINT_4: case POINT_5:
+    case POINT_6: case POINT_7: case POINT_8: case POINT_9: case POINT_10:
+        drawScore(option-POINT_1, (game->scoresTop10)[option-POINT_1]);
+    break;
+    
+    case POINTS_MENU:
+        drawMSG(msgs_arr[MSG_GO_HOME]);
+    break;
+    
+    case POINTS_EXIT:
+        drawMSG(msgs_arr[MSG_EXIT]);
+    break; */
