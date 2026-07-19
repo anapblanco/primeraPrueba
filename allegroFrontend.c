@@ -330,7 +330,7 @@ static void drawObstacles( Game* p2game){
 
 
 static void drawFrog(Game * p2game){
-    int x = ROW((p2game -> frog.x))*SCALE + MARGIN;
+    int x = (p2game -> frog.x)*SCALE + MARGIN;
     int y = ROW((p2game -> frog.y))*SCALE;
     al_draw_bitmap (frog, x, y, 0);
 }
