@@ -27,7 +27,7 @@
 
   
 //VAN EN EL .H O EN EL .C??
-#define SCALE 100
+#define SCALE 90
 #define MARGIN 0
 #define ROW(r) ((MAP_HEIGHT) - r)
 
@@ -62,7 +62,8 @@ static void drawMainMenu (Game* p2game);
 static void drawGameOver (Game* p2game);
 static void drawPaused (Game* p2game);
 static void drawVictory(Game* p2game);
-static void drawScores (Game* p2game);
+static void drawScore(Game* p2game);
+//static void drawTop10 (Game* p2game);
 
 
 void frontendInit(void) {
@@ -188,6 +189,7 @@ void frontendRender(Game * game){
     drawZones(game);
     drawObstacles(game);
     drawFrog(game);
+    drawScore(game);
     break;
 
     case GAME_OVER:
@@ -199,7 +201,7 @@ void frontendRender(Game * game){
     break;
 
     case POINTS:
-    //drawScores(game);
+    //drawTop10(game);
     break;
 
     case PAUSED:
@@ -248,12 +250,11 @@ static void drawZones(Game * p2game){
     ALLEGRO_COLOR road_colour = al_map_rgb(45, 45, 48);
     ALLEGRO_COLOR water_colour = al_map_rgb(0, 119, 190);
     ALLEGRO_COLOR safe_colour = al_map_rgb(46, 139, 87);
-    int r, c, r_disp;
+    int r, c;
 
 
     for (i=0 ; i <= MAP_HEIGHT ; i++){
-        r_disp = ROW(i);
-        y1 = r_disp*SCALE;
+        y1 = ROW(i)*SCALE;
         y2 = y1 + SCALE;
 
         switch (((p2game->level).rows[i]).zone){
@@ -493,8 +494,24 @@ static void drawPaused (Game* p2game){
     al_draw_text(medium_font, color, x_options, y_options + 2*spacing2, ALLEGRO_ALIGN_LEFT, "Exit");
 }
 
+static void drawScore(Game* p2game){
+    int score = ( p2game->score);
+    ALLEGRO_COLOR white = al_map_rgb(255, 255, 255);
+    int spacing = 30;
+    char score_as_string[10];
+    snprintf(score_as_string, 10, "SCORE: %d", score);
+    al_draw_text(small_font, white, spacing, spacing, ALLEGRO_ALIGN_LEFT, score_as_string);
+}
+
+statc void drawLives
+
+
+
+
+
+
 //INCOMPLETA LA PARTE DE OBTENER LOS PUNTAJES Y LAS COORDENADAS
-/*static void drawScores(Game* p2game){
+/*static void drawTop10(Game* p2game){
     char* scores[10];
 
     //agregamos el #1, 2 3,... antes del score
