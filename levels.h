@@ -51,7 +51,8 @@
      LEVEL_3,
      LEVEL_COUNT
  } LevelId;
-
+ 
+ 
  
  typedef struct{
  
@@ -76,7 +77,8 @@
  typedef struct {
      LevelId id;
      GameEntities* entities;
-     Row rows[MAP_HEIGHT +1];
+     Row rows[MAP_HEIGHT+1];
+     FinishBox finishBoxes[5];
  } Level;
  
  
@@ -104,3 +106,4 @@
  
  
  #endif // _LEVELS_H_
+ 

@@ -131,7 +131,7 @@
   * @return Descripcion valor que devuelve
  */
  
-  void gameInit(Game *game);
+  void gameInit(Game*game);
   /**
   * @brief TODO: initialize the game
   * @param param1 Descripcion parametro 1
@@ -145,3 +145,4 @@
  /******************************************************************************/
  
  #endif // _GAME_H_
+ 

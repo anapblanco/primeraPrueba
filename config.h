@@ -23,7 +23,9 @@
  
  #define FINISH_LINE MAP_HEIGHT - 1
  
- #define MAX_PLAYING_ZONE_HEIGHT 5
+ #define MAX_PLAYING_ZONE_HEIGHT 6
+ 
+ #define FINISH_BOX_COUNT 5
  
  //ENTITIES SETTINGS/////////////////////////////////////////////////////
  #define MAX_OBSTACLES 20
@@ -97,3 +99,4 @@
  
  
  #endif // _CONFIG_H_
+ 
