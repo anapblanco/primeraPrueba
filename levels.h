@@ -74,7 +74,7 @@ typedef struct{
 typedef struct {
     LevelId id;
     GameEntities* entities;
-    Row rows[MAP_HEIGHT];
+    Row rows[MAP_HEIGHT + 1];
 } Level;
 
 

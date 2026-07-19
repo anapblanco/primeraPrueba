@@ -28,7 +28,7 @@
   
 //VAN EN EL .H O EN EL .C??
 #define SCALE 100
-#define MARGIN 60
+#define MARGIN 0
 #define ROW(r) ((MAP_HEIGHT) - r)
 
 //Variables locales
@@ -79,7 +79,7 @@ void frontendInit(void) {
 
     printf("sizeof(void*) = %zu\n", sizeof(void*));
 
-    display = al_create_display(MAP_WIDTH*SCALE + 2*MARGIN, MAP_HEIGHT*SCALE);
+    display = al_create_display(MAP_WIDTH*SCALE + 2*MARGIN, (MAP_HEIGHT+1)*SCALE);
 
     printf("3\n");
 
@@ -186,8 +186,8 @@ void frontendRender(Game * game){
 
     case PLAYING:
     drawZones(game);
-    //drawObstacles(game);
-    //drawFrog(game);
+    drawObstacles(game);
+    drawFrog(game);
     break;
 
     case GAME_OVER:
@@ -283,8 +283,7 @@ static void drawZones(Game * p2game){
 
 
 static void drawObstacles( Game* p2game){
-
-    int i, x, y, new_lenght, new_height;
+    int i, x, y, new_lenght, new_height,r_disp,r_disp2;
     int flag_direction = 0; //flag para rotar el dibujo
 
     //Bucle generador de vehículos
@@ -292,7 +291,7 @@ static void drawObstacles( Game* p2game){
         //si la entidad está activa
         if (p2game -> entities.obstacles[i].active){
             x = (p2game -> entities.obstacles[i].x)*SCALE + MARGIN;
-            y = (p2game -> entities.obstacles[i].y)*SCALE;
+            y = ROW((p2game -> entities.obstacles[i].y))*SCALE;
 
             //en los png los vehículos apuntan para la izquierda
             if ((p2game -> entities.obstacles[i].direction) == DIR_LEFT){
@@ -317,7 +316,7 @@ static void drawObstacles( Game* p2game){
         //si la entidad está activa
         if (p2game -> entities.floaters[i].active){
             x = (p2game -> entities.floaters[i].x)*SCALE + MARGIN;
-            y = (p2game -> entities.floaters[i].y)*SCALE;
+            y = ROW((p2game -> entities.floaters[i].y))*SCALE;
             new_lenght = (p2game -> entities.floaters[i].length)*SCALE;
             new_height = SCALE;
           
@@ -331,8 +330,8 @@ static void drawObstacles( Game* p2game){
 
 
 static void drawFrog(Game * p2game){
-    int x = (p2game -> frog.x)*SCALE + MARGIN;
-    int y = (p2game -> frog.y)*SCALE;
+    int x = ROW((p2game -> frog.x))*SCALE + MARGIN;
+    int y = ROW((p2game -> frog.y))*SCALE;
     al_draw_bitmap (frog, x, y, 0);
 }
 
