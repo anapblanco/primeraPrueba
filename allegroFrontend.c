@@ -473,8 +473,8 @@ static void drawScore(Game* p2game){
     int score = ( p2game->score);
     ALLEGRO_COLOR white = al_map_rgb(255, 255, 255);
     int spacing = 30;
-    char score_as_string[10];
-    snprintf(score_as_string, 10, "SCORE: %d", score);
+    char score_as_string[11];
+    snprintf(score_as_string, 11, "SCORE: %d", score);
     al_draw_text(small_font, white, spacing, spacing, ALLEGRO_ALIGN_LEFT, score_as_string);
 }
 

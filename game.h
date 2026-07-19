@@ -142,9 +142,7 @@
  void menuNext(MenuState *menu);
  void menuPrevious(MenuState *menu);
  
- 
- 
- 
  /******************************************************************************/
  
  #endif // _GAME_H_
+ 
