@@ -9,6 +9,7 @@
  ******************************************************************************/
 #include "game.h"
 #include "interactions.h"
+#include "top10.h"
 
 /*******************************************************************************
  * CONSTANTS, MACROS, ENUMERATIONS, STRUCTURES AND TYPEDEFS
@@ -25,10 +26,10 @@
  ******************************************************************************/
 
 static void processInputPlaying(GameState * state, Input input, Frog * frog);
-static void processInputPaused(GameState * state, Input input);
-static void processInputGameOver(GameState * state, Input input);
-static void processInputVictory(GameState * state, Input input);
-static void processInputPoints(GameState * state, Input input);
+static void processInputPaused(Game * game, Input input);
+static void processInputGameOver(Game * game, Input input);
+static void processInputVictory(Game * game, Input input);
+static void processInputPoints(Game * game, Input input);
 static void processInputMenu(Game * game, Input input);
 
 /*******************************************************************************
@@ -69,18 +70,18 @@ void updateGame(Game * game, Input input){
 
         break;
         case PAUSED:
-            processInputPaused(&(game->state), input);
+            processInputPaused(game, input);
         break;
         case VICTORY:
             resetFrog(&(game->frog));
-            processInputVictory(&(game->state), input);
+            processInputVictory(game, input);
         break;
         case GAME_OVER:
             resetFrog(&(game->frog));
-            processInputGameOver(&(game->state), input);
+            processInputGameOver(game, input);
         break;
         case POINTS:
-            processInputPoints(&(game->state), input);
+            processInputPoints(game, input);
         break;
 
         case EXIT:
@@ -95,10 +96,16 @@ void updateGame(Game * game, Input input){
     initLevel(game);
     initFrog(&(game->frog));
 
-
     game->score=MIN_SCORE;
+
+    //VER BIEN ESTOOO no se si hay que sacar este for o no por los eerrores de archivso, probar
+    /*for(int i=0; i<TOP10_SIZE; i++){
+        game->scoresTop10[i] = MIN_SCORE;
+    }*/
     game->lives=MAX_LIVES;
     game->lastEntityUpdate = clock();
+    
+    getTop10Status(game->scoresTop10, game->score);
 
     game->state.id = MENU;
     game->state.menu.selected = MENU_TITLE;
@@ -141,6 +148,7 @@ static void processInputMenu(Game * game, Input input){
                     game->state.id = POINTS;
                 break;
                 case MENU_EXIT:
+                    getTop10Status(game->scoresTop10, game->score);
                     game->state.id = EXIT;
                 break;
                 default:
@@ -160,28 +168,30 @@ static void processInputMenu(Game * game, Input input){
 }
 
 ////////////////////////////////////////////////////////////////////////PAUSED
-void processInputPaused(GameState * state, Input input){
+void processInputPaused(Game *game, Input input){
     switch(input){
         case SELECT:
-            switch ( (state->paused).selected ){
+            switch ( (game->state.paused).selected ){
                 case PAUSED_MENU: 
-                    state->id = MENU;
+                    getTop10Status(game->scoresTop10, game->score);
+                    game->state.id = MENU;
                 break;
                 case PAUSED_PLAY:
-                    state->id = PLAYING; //////////////ANALIZAR TEMA VIDAS REPLAY
+                    game->state.id = PLAYING; //////////////ANALIZAR TEMA VIDAS REPLAY
                 break;
                 case PAUSED_EXIT:
-                    state->id = EXIT;
+                    getTop10Status(game->scoresTop10, game->score);
+                    game->state.id = EXIT;
                 break;
             }
-            (state->paused).selected = PAUSED_TITLE; //resteo menu
+            (game->state.paused).selected = PAUSED_TITLE; //resteo menu
         break;
         case UP:
-            menuPrevious(&(state->paused));
+            menuPrevious(&(game->state.paused));
         break;
 
         case DOWN:
-            menuNext(&(state->paused));
+            menuNext(&(game->state.paused));
         break;
 
         case NONE: case RIGHT: case LEFT: default:
@@ -191,25 +201,27 @@ void processInputPaused(GameState * state, Input input){
 }
 
 ///////////////////////////////////////////////////////////GAME OVER
-void processInputGameOver(GameState * state, Input input){
+void processInputGameOver(Game *game, Input input){
         switch(input){
             case SELECT:
-                switch ( (state->gameOver).selected ){
+                switch ( game->state.gameOver.selected ){
                     case GAME_OVER_MENU: 
-                        state->id = MENU;
+                        getTop10Status(game->scoresTop10, game->score);
+                        game->state.id = MENU;
                     break;
                     case GAME_OVER_EXIT:
-                        state->id = EXIT;
+                        getTop10Status(game->scoresTop10, game->score);
+                        game->state.id = EXIT;
                     break;
                 }
-                (state->gameOver).selected = GAME_OVER_TITLE; //reset menu
+                (game->state.gameOver).selected = GAME_OVER_TITLE; //reset menu
             break;
             case UP:
-                menuPrevious(&(state->gameOver));
+                menuPrevious(&(game->state.gameOver));
             break;
 
             case DOWN:
-                menuNext(&(state->gameOver));
+                menuNext(&(game->state.gameOver));
             break;
 
             case NONE: case RIGHT: case LEFT: default:
@@ -219,25 +231,27 @@ void processInputGameOver(GameState * state, Input input){
 }
 
 ///////////////////////////////////////////////////////////VICTORY
-void processInputVictory(GameState * state, Input input){
+void processInputVictory(Game *game, Input input){
         switch(input){
             case SELECT:
-                switch ( (state->victory).selected ){
+                switch ( (game->state.victory).selected ){
                     case VICTORY_MENU: 
-                        state->id = MENU;
+                        getTop10Status(game->scoresTop10, game->score);
+                        game->state.id = MENU;
                     break;
                     case VICTORY_EXIT:
-                        state->id = EXIT;
+                        getTop10Status(game->scoresTop10, game->score);
+                        game->state.id = EXIT;
                     break;
                 }
-                (state->victory).selected = VICTORY_TITLE; //reset menu
+                (game->state.victory).selected = VICTORY_TITLE; //reset menu
             break;
             case UP:
-                menuPrevious(&(state->victory));
+                menuPrevious(&(game->state.victory));
             break;
 
             case DOWN:
-                menuNext(&(state->victory));
+                menuNext(&(game->state.victory));
             break;
 
             case NONE: case RIGHT: case LEFT: default:
@@ -246,12 +260,12 @@ void processInputVictory(GameState * state, Input input){
     }
 }
 //////////////////////////////////////////////////////////POINTS
-void processInputPoints(GameState * state, Input input){
+void processInputPoints(Game * game, Input input){
         switch(input){
             case SELECT:
-                switch ( (state->points).selected ){
+                switch ( (game->state.points).selected ){
                     case POINTS_MENU: 
-                        state->id = MENU;
+                        game->state.id = MENU;
                     break;
 
                     case POINT_1: case POINT_2: case POINT_3: case POINT_4: case POINT_5:
@@ -260,17 +274,18 @@ void processInputPoints(GameState * state, Input input){
                     break;
 
                     case POINTS_EXIT:
-                        state->id = EXIT;
+                    getTop10Status(game->scoresTop10, game->score);
+                        game->state.id = EXIT;
                     break;
                 }
-                (state->points).selected = POINTS_TITLE; //para que no se pueda seleccionar nada mas
+                (game->state.points).selected = POINTS_TITLE; //para que no se pueda seleccionar nada mas
             break;
             case UP:
-                menuPrevious(&(state->points));
+                menuPrevious(&(game->state.points));
             break;
 
             case DOWN:
-                menuNext(&(state->points));
+                menuNext(&(game->state.points));
             break;
 
             case NONE: case RIGHT: case LEFT: default:
