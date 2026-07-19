@@ -60,6 +60,10 @@
 
             Row *currentRow = &(game->level.rows[game->frog.y]); // Tomamos la fila en la que esta la rana
 
+            if (currentRow->zone != WATER) {
+                game->frog.speed = 0; // reseteamos velocidad al salir del agua
+            }
+            
             switch(currentRow->zone){ //Dependiendo la zona en la que esta analizamos como y con que puede interactuar
 
                 case ROAD://Si la rana esta en la calle lo unico que le puede pasar es que sea atropellada por un obstaculo
