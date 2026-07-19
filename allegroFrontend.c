@@ -43,6 +43,8 @@ static ALLEGRO_BITMAP* pause_img = NULL;
 static ALLEGRO_BITMAP* skull = NULL;
 static ALLEGRO_BITMAP* trophy = NULL;
 static ALLEGRO_BITMAP* heart = NULL;
+static ALLEGRO_BITMAP* safe_box = NULL;
+
 
 
 static ALLEGRO_FONT* very_big_font = NULL;
@@ -163,6 +165,7 @@ void frontendRender(Game * game){
     drawFrog(game);
     drawScore(game);
     drawLives(game);
+    drawSafeBoxes(game);
     break;
 
     case GAME_OVER:
@@ -329,9 +332,7 @@ static void loadFiles (void){
     trophy = al_load_bitmap("trophy.png");
     pause_img =al_load_bitmap("pause.png");
     heart = al_load_bitmap("heart.png");
-    if(skull == NULL) printf("skull.png no cargado\n");
-    if(pause_img == NULL) printf("pause.png no cargado\n");
-    if(trophy == NULL) printf("trophy.png no cargado\n");
+    safe_box = al_load_bitmap("safe_box.png");
 
     very_big_font = al_load_ttf_font("Tiny5-Regular.ttf", 200, 0);
     if(very_big_font == NULL){
@@ -494,8 +495,17 @@ static void drawLives(Game* p2game){
 }
 
 
+//hay que ver cuantas safe boxes son por nivel, capaz hay que modificar el bucle
+static void drawSafeBoxes(Game* p2game){
+    
+    int i, x, y;
 
-
+    for (i=0 ; i<5 ; i++){
+        x = (p2game -> level.finishBoxes[i].x);
+        y = ROW(p2game -> level.finishBoxes[i].y);
+        al_draw_scaled_bitmap(safe_box, 0, 0, al_get_bitmap_width(safe_box), al_get_bitmap_height(safe_box), x, y, SCALE, SCALE, 0);
+    }
+}
 
 
 //INCOMPLETA LA PARTE DE OBTENER LOS PUNTAJES Y LAS COORDENADAS
