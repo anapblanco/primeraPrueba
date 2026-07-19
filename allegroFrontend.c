@@ -293,10 +293,16 @@ static void drawObstacles( Game* p2game){
             y = ROW((p2game -> entities.floaters[i].y))*SCALE;
             new_lenght = (p2game -> entities.floaters[i].length)*SCALE;
             new_height = SCALE;
-          
+            
+            if ((p2game -> entities.floaters[i].direction) == DIR_LEFT){
+                flag_direction = 0;
+            }
+            else {
+                flag_direction = ALLEGRO_FLIP_HORIZONTAL;
+            }
             //Dibujamos el tronco con el largo correspondiente
             al_draw_scaled_bitmap(floater_trunk, 0, 0, al_get_bitmap_width(floater_trunk),
-                al_get_bitmap_height(floater_trunk), x, y, new_lenght, new_height, 0);
+                al_get_bitmap_height(floater_trunk), x, y, new_lenght, new_height, flag_direction);
         }
 
     }
@@ -474,7 +480,7 @@ static void drawScore(Game* p2game){
     ALLEGRO_COLOR white = al_map_rgb(255, 255, 255);
     int spacing = 30;
     char score_as_string[11];
-    snprintf(score_as_string, 11, "SCORE: %d", score);
+    snprintf(score_as_string, sizeof(score_as_string), "SCORE: %d", score);
     al_draw_text(small_font, white, spacing, spacing, ALLEGRO_ALIGN_LEFT, score_as_string);
 }
 

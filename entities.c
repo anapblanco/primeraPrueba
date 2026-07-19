@@ -101,7 +101,6 @@
      (frog->y)=FROG_Y0; //Ubicamos la rana en sus coordenadas iniciales, reseteamos su ultima zona segura y su velocidad
      (frog->x)=FROG_X0; 
      frog->speed = 0;
-     frog->lastCheckpoint = NO_CHECKPOINT;
      return 0;
    }
    
@@ -134,6 +133,7 @@
      else{
        *id = GAME_OVER; //Si la rana perdio todas sus vidas el juego se termina
        *lives = MAX_LIVES; //Reseteamos las vidas para la proxima partida
+       frog->lastCheckpoint = NO_CHECKPOINT;
        resetFrog(frog);
      }
      return 0;
