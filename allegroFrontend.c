@@ -473,7 +473,7 @@ static void drawPaused (Game* p2game){
     int option_selected = (p2game -> state.paused.selected);
     int spacing1 = 180;
     int spacing2 = 100;
-    int y_title = 500;
+    int y_title = 600;
     int y_options = y_title + spacing1;
     int x_options;
     int x_center =MARGIN + (SCALE*MAP_WIDTH)/2; //el medio de la pantalla
@@ -506,13 +506,12 @@ static void drawScore(Game* p2game){
     al_draw_text(small_font, white, spacing, spacing, ALLEGRO_ALIGN_LEFT, score_as_string);
 }
 
-//NO ANDA EL DIBUJO DE VIDAS, NO SE MUESTRA NADA
 static void drawLives(Game* p2game){
     int text_height = al_get_font_line_height(small_font);
     int i, spacing = 30;
     int lives = (p2game->lives);
     for (i=0 ; i<lives ; i++){
-        al_draw_scaled_bitmap(heart, 0, 0, (MAP_WIDTH+1)*SCALE - (i+1)*spacing, spacing + text_height, (MAP_WIDTH+1)*SCALE - spacing, spacing + text_height, text_height, text_height, 0);
+        al_draw_scaled_bitmap(heart, 0, 0, al_get_bitmap_width(heart), al_get_bitmap_height(heart), MAP_WIDTH*SCALE - (i+1)*(text_height+spacing), spacing, text_height, text_height, 0);
     }
 }
 
