@@ -29,6 +29,7 @@
 //VAN EN EL .H O EN EL .C??
 #define SCALE 100
 #define MARGIN 0
+#define ROW(r) ((MAP_HEIGHT) - r)
 
 //Variables locales
 static ALLEGRO_EVENT_QUEUE *queue = NULL;
@@ -96,6 +97,10 @@ void frontendInit(void) {
     printf("5\n");
 
     if (al_init_image_addon() == false) {
+        printf("Fallo image addon\n");
+    }
+
+    if (al_init_primitives_addon() == false) {
         printf("Fallo image addon\n");
     }
 
@@ -180,7 +185,7 @@ void frontendRender(Game * game){
     break;
 
     case PLAYING:
-    //drawZones(game);
+    drawZones(game);
     //drawObstacles(game);
     //drawFrog(game);
     break;
@@ -235,7 +240,7 @@ void frontendDestroy(void){
 
 //Definiciones de funciones locales
 
-static void drawZones(Game * p2game){ //FALTA UN CASO DEFAULT?
+static void drawZones(Game * p2game){
     
     int i, y1, y2;
     int x1 = MARGIN;
@@ -243,13 +248,16 @@ static void drawZones(Game * p2game){ //FALTA UN CASO DEFAULT?
     ALLEGRO_COLOR road_colour = al_map_rgb(45, 45, 48);
     ALLEGRO_COLOR water_colour = al_map_rgb(0, 119, 190);
     ALLEGRO_COLOR safe_colour = al_map_rgb(46, 139, 87);
+    int r, c, r_disp, backend_row;
 
-    for (i=0 ; i<MAP_HEIGHT ; i++){
 
+    for (i=0 ; i<=MAP_HEIGHT ; i++){
+        backend_row = (i < MAP_HEIGHT) ? i : (MAP_HEIGHT - 1);
+        r_disp = ROW(i);
         y1 = i*SCALE;
         y2 = y1 + SCALE;
 
-        switch (p2game->level.rows[i].zone){
+        switch (((p2game->level).rows[backend_row]).zone){
             case ROAD:
             al_draw_filled_rectangle(x1, y1, x2, y2, road_colour);
             break;
@@ -259,6 +267,9 @@ static void drawZones(Game * p2game){ //FALTA UN CASO DEFAULT?
             break;
 
             case START:
+            al_draw_filled_rectangle(x1, y1, x2, y2, safe_colour);
+            break;
+
             case SAFE:
             al_draw_filled_rectangle(x1, y1, x2, y2, safe_colour);
             break;
@@ -269,6 +280,7 @@ static void drawZones(Game * p2game){ //FALTA UN CASO DEFAULT?
     }
 
 }
+
 
 
 static void drawObstacles( Game* p2game){
