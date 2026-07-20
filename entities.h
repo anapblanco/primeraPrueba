@@ -65,7 +65,6 @@
      uint8_t x;
      uint8_t length;
      bool occupied;
-     
  } FinishBox;
  
  

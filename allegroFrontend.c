@@ -25,6 +25,9 @@
 #include "entities.h"
 #include "config.h"
 
+/*******************************************************************************
+ * CONSTANTS, MACROS, ENUMERATIONS, STRUCTURES AND TYPEDEFS
+ ******************************************************************************/
 
   
 //VAN EN EL .H O EN EL .C??
@@ -32,7 +35,11 @@
 #define MARGIN 0
 #define ROW(r) ((MAP_HEIGHT) - r)
 
-//Variables locales
+
+/*******************************************************************************
+ * STATIC VARIABLES AND CONST VARIABLES WITH FILE LEVEL SCOPE
+ ******************************************************************************/
+
 static ALLEGRO_EVENT_QUEUE *queue = NULL;
 static ALLEGRO_DISPLAY* display;
 static ALLEGRO_BITMAP* floater_trunk = NULL;
@@ -55,6 +62,10 @@ static ALLEGRO_COLOR white;
 static ALLEGRO_COLOR pink;
 
 
+/*******************************************************************************
+ * FUNCTION PROTOTYPES FOR PRIVATE FUNCTIONS WITH FILE LEVEL SCOPE
+ ******************************************************************************/
+
 static void drawZones(Game * p2game);
 static void drawObstacles(Game * p2game);
 static void drawFrog(Game * p2game);
@@ -69,23 +80,25 @@ static void drawFinishBoxes(Game* p2game);
 static void cloneFrog(Game* p2game);
 static void drawTop10(Game* p2game);
 
+/*******************************************************************************
+ *******************************************************************************
+                        GLOBAL FUNCTION DEFINITIONS
+ *******************************************************************************
+ ******************************************************************************/
 
 void frontendInit(void) {
 
+    //Inicializa el núcleo de Allegro y todos los subsistemas necesarios para el juego. 
     if (al_init() == false) {
         printf("Fallo al_init\n");
         return;
     }
 
-    al_set_new_display_flags(ALLEGRO_WINDOWED);
-
-    display = al_create_display(MAP_WIDTH*SCALE + 2*MARGIN, (MAP_HEIGHT+1)*SCALE);
-
     if (display == NULL) {
         printf("Display NULL\n");
         return;
     }
-
+    //Inicializa
     if (al_install_keyboard() == false) {
         printf("Fallo teclado\n");
     }
@@ -106,18 +119,42 @@ void frontendInit(void) {
         printf("Fallo font addon\n");
     }
 
+
+    //Creamos ventana del juego
+    al_set_new_display_flags(ALLEGRO_WINDOWED);
+
+    display = al_create_display(MAP_WIDTH*SCALE + 2*MARGIN, (MAP_HEIGHT+1)*SCALE);
+    if(display == NULL) {
+        printf("Fallo al_create_display\n");
+        return;
+    }
+
     al_init_ttf_addon();
 
+    //Creamos la cola de eventos para manejar el teclado y la ventana
     queue = al_create_event_queue();
+    if(queue == NULL) {
+        printf("Fallo al_create_event_queue\n");
+        al_destroy_display(display); // Limpiamos la ventana antes de salir
+        return;
+    }
 
+    // Registramos teclado y eventos de la ventana en la cola
     al_register_event_source(queue, al_get_keyboard_event_source());
-
     al_register_event_source(queue, al_get_display_event_source(display));
+
+    //Inicializa los colores globales del frontend
     white = al_map_rgb(255, 255, 255);
     pink = al_map_rgb(255, 105, 180);
 
+    // Cargamos imagenes y fuentes
     loadFiles();
 }
+
+/**
+ * @brief Inicializa todo el entorno gráfico, periféricos y recursos de Allegro.
+ * @return 
+ */
 
 
 Input frontendGetInput(void){
@@ -221,7 +258,11 @@ void frontendDestroy(void){
 }
 
 
-//Definiciones de funciones locales
+ /*******************************************************************************
+  *******************************************************************************
+                         LOCAL FUNCTION DEFINITIONS
+  *******************************************************************************
+  ******************************************************************************/
 
 static void drawZones(Game * p2game){
     
@@ -231,7 +272,6 @@ static void drawZones(Game * p2game){
     ALLEGRO_COLOR road_colour = al_map_rgb(45, 45, 48);
     ALLEGRO_COLOR water_colour = al_map_rgb(0, 119, 190);
     ALLEGRO_COLOR safe_colour = al_map_rgb(46, 139, 87);
-    int r, c;
 
 
     for (i=0 ; i <= MAP_HEIGHT ; i++){
@@ -265,7 +305,8 @@ static void drawZones(Game * p2game){
 
 
 static void drawObstacles( Game* p2game){
-    int i, x, y, new_lenght, new_height,r_disp,r_disp2, space = 10;
+
+    int i, x, y, new_lenght, new_height, space = 10;
     int flag_direction = 0; //flag para rotar el dibujo
 
     //Bucle generador de vehículos
@@ -581,6 +622,4 @@ static void drawTop10(Game* p2game){
 
     color = (selected == POINTS_EXIT)? pink : white;
     al_draw_text(medium_font, color, x_trophy1,y_top1 + (TOP10_SIZE+3)*spacing2, ALLEGRO_ALIGN_LEFT, "Exit");
-
-
 }
