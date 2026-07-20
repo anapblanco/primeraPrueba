@@ -51,6 +51,7 @@ static ALLEGRO_BITMAP* skull = NULL;
 static ALLEGRO_BITMAP* trophy = NULL;
 static ALLEGRO_BITMAP* heart = NULL;
 static ALLEGRO_BITMAP* safe_box = NULL;
+static ALLEGRO_BITMAP* floater_leaf = NULL;
 
 
 
@@ -92,11 +93,6 @@ void frontendInit(void) {
     //Inicializa el núcleo de Allegro y todos los subsistemas necesarios para el juego. 
     if (al_init() == false) {
         printf("Fallo al_init\n");
-        return;
-    }
-
-    if (display == NULL) {
-        printf("Display NULL\n");
         return;
     }
     //Inicializa
@@ -308,8 +304,6 @@ static void drawZones(Game * p2game){
 
 }
 
-
-
 static void drawObstacles( Game* p2game){
 
     int i, x, y, new_lenght, new_height, space = 10;
@@ -363,14 +357,12 @@ static void drawObstacles( Game* p2game){
     }
 }
 
-
 static void drawFrog(Game * p2game){
     int x = (p2game -> frog.x)*SCALE + MARGIN;
     int y = ROW((p2game -> frog.y))*SCALE;
     int space = 35;
     al_draw_scaled_bitmap (frog, 0, 0,al_get_bitmap_width(frog), al_get_bitmap_height(frog), x, y, al_get_bitmap_width(frog)-space, al_get_bitmap_height(frog)-space, 0);
 }
-
 
 static void loadFiles (void){
     floater_trunk = al_load_bitmap("floater_trunk.png");
@@ -399,7 +391,6 @@ static void loadFiles (void){
     printf("small_font=%p\n", small_font);
 
 }
-
 
 static void drawMainMenu (Game* p2game){
 
@@ -432,7 +423,6 @@ static void drawMainMenu (Game* p2game){
     al_draw_text(medium_font, color, x_menu, y_option1 + 2*spacing2, ALLEGRO_ALIGN_LEFT, "Exit");
 }
 
-
 static void drawGameOver (Game* p2game){
     ALLEGRO_COLOR color;
 
@@ -463,10 +453,10 @@ static void drawGameOver (Game* p2game){
     al_draw_text(medium_font, color, x_options, y_options + spacing2, ALLEGRO_ALIGN_LEFT, "Exit");
 
     snprintf(score_as_string, sizeof(score_as_string), "TOTAL SCORE: %d", score);
-    al_draw_text(big_font, white, x_options, y_options + 2*spacing1, ALLEGRO_ALIGN_LEFT,score_as_string);
+    al_draw_text(big_font, white, x_options, y_options + 2*spacing2, ALLEGRO_ALIGN_LEFT,score_as_string);
 
     //si el usuario es top10, notificamos
-    top10_notify(p2game, x_options, y_options + 3*spacing1);
+    top10_notify(p2game, x_options, y_options + 4*spacing2);
 }
 
 static void drawVictory(Game* p2game){
@@ -497,16 +487,15 @@ static void drawVictory(Game* p2game){
     al_draw_text(medium_font, color, x_options, y_options, ALLEGRO_ALIGN_LEFT, "Back to menu");
 
     color = (option_selected == VICTORY_EXIT)? pink : white;
-    al_draw_text(medium_font, color, x_options, y_options + spacing2, ALLEGRO_ALIGN_LEFT, "Exit");
+    al_draw_text(medium_font, color, x_options, y_options + 2*spacing2, ALLEGRO_ALIGN_LEFT, "Exit");
 
     snprintf(score_as_string, sizeof(score_as_string), "TOTAL SCORE: %d", score);
-    al_draw_text(big_font, white, x_options, y_options + 2*spacing1, ALLEGRO_ALIGN_LEFT,score_as_string);
+    al_draw_text(big_font, white, x_options, y_options + 2*spacing2, ALLEGRO_ALIGN_LEFT,score_as_string);
 
     //si el usuario es top10, notificamos
-    top10_notify(p2game, x_options, y_options + 3*spacing1);
+    top10_notify(p2game, x_options, y_options + 4*spacing2);
     
 }
-
 
 static void drawPaused (Game* p2game){
 
@@ -571,14 +560,12 @@ static void cloneFrog(Game * p2game){
     int i, x, y,zones_occupied;
 
     for (i=0,zones_occupied = 1; i<FINISH_BOX_COUNT ; i++){
-        if((p2game -> level.finishBoxes[i].occupied) && (zones_occupied < FINISH_BOX_COUNT)){
+        if(p2game -> level.finishBoxes[i].occupied){
             x = (p2game -> level.finishBoxes[i].x)*SCALE;
             y = ROW(MAP_HEIGHT+1)*SCALE;
                 al_draw_scaled_bitmap(frog, 0, 0, al_get_bitmap_width(frog), al_get_bitmap_height(frog), x, y, SCALE, SCALE, 0);
-                zones_occupied++;
-            }
+        }
     }
-
 }
 
 static void drawTop10(Game* p2game){
@@ -634,15 +621,11 @@ static void drawTop10(Game* p2game){
 }
 
 static void top10_notify(Game* p2game, int x, int y){
-    int i;
-
-    for (i=0 ; i<TOP10_SIZE ; i++){
-        if ((p2game -> scoresTop10[i]) == (p2game -> score) ){
-            al_draw_text(medium_font, pink, x, y, ALLEGRO_ALIGN_CENTER,
-                "CONGRATULATIONS! YOU ARE IN THE TOP 10!");
+    if (p2game->score > p2game->scoresTop10[TOP10_SIZE - 1]){
+        al_draw_text(medium_font, pink, x, y, ALLEGRO_ALIGN_LEFT,
+                "YOU MADE IT TO THE TOP 10!");
     
             return;
         }
-    }
     return;
 }
