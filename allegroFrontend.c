@@ -540,7 +540,7 @@ static void drawTop10(Game* p2game){
     char score_as_string[30];
     int *pScores = p2game->scoresTop10;
     int selected = p2game->state.points.selected;
-    
+
     // Constantes de diseño
     int x_center = (SCALE*MAP_WIDTH)/2;
     int y_title = 100;
@@ -567,15 +567,20 @@ static void drawTop10(Game* p2game){
 
     // 2. Dibujar Lista del Top 10
     for (i = 0; i < TOP10_SIZE; i++){
-        snprintf(score_as_string, 30, "%d", pScores[i]);
-        snprintf(position, 5, "#%d", i + 1);
-        al_draw_text(small_font, white, x_trophy1, y_top1 + i*spacing2, ALLEGRO_ALIGN_LEFT, position);
-        al_draw_text(small_font, white, x_trophy2 + title_height, y_top1 + i*spacing2, ALLEGRO_ALIGN_RIGHT, score_as_string);
+        snprintf(score_as_string, sizeof(score_as_string), "%d", pScores[i]);
+        snprintf(position, sizeof(position), "#%d", i + 1);
+
+        color = (selected == i) ? pink : white;
+
+        al_draw_text(small_font, color, x_trophy1, y_top1 + i*spacing2, ALLEGRO_ALIGN_LEFT, position);
+        al_draw_text(small_font, color, x_trophy2 + title_height, y_top1 + i*spacing2, ALLEGRO_ALIGN_RIGHT, score_as_string);
     }
     // 3. Dibujar Opciones de Menú
-    color = ((selected == POINTS_MENU) || (selected == POINTS_TITLE))? pink : white;
+    color = (selected == POINTS_MENU)? pink : white;
     al_draw_text(medium_font, color, x_trophy1, y_top1 + (TOP10_SIZE +2)*spacing2, ALLEGRO_ALIGN_LEFT, "Back to menu");
 
     color = (selected == POINTS_EXIT)? pink : white;
     al_draw_text(medium_font, color, x_trophy1,y_top1 + (TOP10_SIZE+3)*spacing2, ALLEGRO_ALIGN_LEFT, "Exit");
+
+
 }
