@@ -53,10 +53,11 @@ void drawZones(Game * p2game);
 void drawObstacles(Game * p2game);
 void drawFrog(Game * p2game);
 void drawScore(Game * p2game);
+void drawLevel(Game * p2game);
 void drawLives(Game * p2game);
 void drawFinishBoxes(Game * p2game);
 void cloneFrog(Game * p2game);
- 
+
 /*******************************************************************************
  * FUNCTION PROTOTYPES - allegroMenus.c
  ******************************************************************************/
@@ -66,7 +67,6 @@ void drawPaused(Game * p2game);
 void drawVictory(Game * p2game);
 void drawTop10(Game * p2game);
 void top10_notify(Game * p2game, int x, int y);
- 
 /******************************************************************************/
  
 #endif // _FRONTEND_INTERNAL_H_

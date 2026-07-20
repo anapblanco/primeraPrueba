@@ -179,6 +179,7 @@ void frontendRender(Game * game){
     drawObstacles(game);
     drawFrog(game);
     drawScore(game);
+    drawLevel(game);
     drawLives(game);
     drawFinishBoxes(game);
     cloneFrog(game);

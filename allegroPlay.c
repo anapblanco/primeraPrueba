@@ -130,6 +130,14 @@
     al_draw_text(small_font, white, spacing, spacing, ALLEGRO_ALIGN_LEFT, score_as_string);
 }
 
+ void drawLevel(Game* p2game){
+    int level = (p2game->level.id)+1;
+    int spacing = 30;
+    char level_as_string[11];
+    snprintf(level_as_string, sizeof(level_as_string), "LEVEL: %d", level);
+    al_draw_text(small_font, white, spacing, MAP_HEIGHT*SCALE - spacing, ALLEGRO_ALIGN_LEFT, level_as_string);
+}
+
  void drawLives(Game* p2game){
     int text_height = al_get_font_line_height(small_font);
     int i, spacing = 30;
@@ -161,3 +169,4 @@
         }
     }
 }
+
