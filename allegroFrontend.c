@@ -579,3 +579,52 @@ switch (option) {
     case POINTS_EXIT:
         drawMSG(msgs_arr[MSG_EXIT]);
     break; */
+
+     ALLEGRO_COLOR white = al_map_rgb(255, 255, 255);
+    ALLEGRO_COLOR green = al_map_rgb(86, 176, 0);
+    ALLEGRO_COLOR color;
+    int x_center = MARGIN + (SCALE*MAP_WIDTH)/2;
+    int y_title = 60;
+    int spacing_trophy = 100;
+    int spacing1 = 60;
+    int spacing2 = 70;
+    int i;
+    char position[5];//arreglo para guardar posicion en el podio (ej: #1, #2, ...)
+    char score_as_string[30];
+
+    int orig_width = al_get_bitmap_width(trophy);
+    int orig_height = al_get_bitmap_height(trophy);
+
+    int title_width = al_get_text_width(big_font, "TOP 10");
+    int title_height = al_get_font_line_height(big_font);
+
+    int x_trophy1 = x_center - title_width/2 - spacing_trophy - al_get_bitmap_width(trophy);
+    int x_trophy2 = x_center + title_width/2 + spacing_trophy;
+    int y_top1 = y_title + title_height + spacing1;
+    int x_options = x_center + title_width/2, y_options= (MAP_HEIGHT*SCALE)/2;
+
+
+    al_draw_text(big_font, white, x_center, y_title, ALLEGRO_ALIGN_CENTER, "TOP 10");
+    al_draw_scaled_bitmap(trophy, 0, 0, orig_width, orig_height, x_trophy1, y_title, title_height, title_height, 0);
+    al_draw_scaled_bitmap(trophy, 0, 0, orig_width, orig_height, x_trophy2, y_title, title_height, title_height, 0);
+
+    //caso #1 va con distinto spacing
+    i=0;
+        snprintf(score_as_string, 30, "%d", top10[i]); //guarda cada score como string
+        snprintf(position, 5, "#%d", i + 1);
+        al_draw_text(small_font, white, x_trophy1, y_top1, ALLEGRO_ALIGN_LEFT, position);
+        al_draw_text(small_font, white, x_trophy2 + title_height, y_top1, ALLEGRO_ALIGN_RIGHT, score_as_string);
+
+    for (i=1 ; i<10 ; i++){
+        snprintf(score_as_string, 30, "%d", top10[i]); //guarda cada score como string
+        snprintf(position, 5, "#%d", i + 1);
+        al_draw_text(small_font, white, x_trophy1, y_top1 + (i)*spacing2, ALLEGRO_ALIGN_LEFT, position);
+        al_draw_text(small_font, white, x_trophy2 + title_height, y_top1 +(i)*spacing2, ALLEGRO_ALIGN_RIGHT, score_as_string);
+    }
+
+    color = ((selected == POINTS_MENU) || (selected == POINTS_TITLE))? green : white;
+    al_draw_text(medium_font, color, x_trophy2, y_options, ALLEGRO_ALIGN_CENTER, "Back to menu");
+
+    color = (selected == POINTS_EXIT)? green : white;
+    al_draw_text(medium_font, color, x_options, y_options + spacing1, ALLEGRO_ALIGN_CENTER, "Exit");
+}
