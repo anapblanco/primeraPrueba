@@ -41,11 +41,11 @@ static Level level1={
         {NO_CHECKPOINT, NULL, SAFE, 0, 0, 0, 0, DIR_LEFT}
     },
     {
-        {0, 3, false},
-        {0, 3, false},
-        {0, 3, false},
-        {0, 3, false},
-        {0, 3, false}
+        {1, 1, false},
+        {4, 1, false},
+        {7, 1, false},
+        {10, 1, false},
+        {13, 1, false}
     }
 };
 
@@ -75,11 +75,11 @@ static Level level2={
         {NO_CHECKPOINT, NULL, SAFE, 0, 0, 0, 0, DIR_LEFT}
     },
     {
-        {0, 3, false},
-        {0, 3, false},
-        {0, 3, false},
-        {0, 3, false},
-        {0, 3, false}
+        {1, 1, false},
+        {4, 1, false},
+        {7, 1, false},
+        {10, 1, false},
+        {13, 1, false}
     }
 };
 
@@ -110,11 +110,11 @@ static Level level3={
 
     },
     {
-        {0, 3, false},
-        {0, 3, false},
-        {0, 3, false},
-        {0, 3, false},
-        {0, 3, false}
+        {1, 1, false},
+        {4, 1, false},
+        {7, 1, false},
+        {10, 1, false},
+        {13, 1, false}
     }
 };
 

@@ -51,9 +51,9 @@ static ALLEGRO_FONT* very_big_font = NULL;
 static ALLEGRO_FONT* big_font = NULL;
 static ALLEGRO_FONT* medium_font = NULL;
 static ALLEGRO_FONT* small_font = NULL;
+static ALLEGRO_COLOR white;
+static ALLEGRO_COLOR pink;
 
-
-//Prototipos funciones internas
 
 static void drawZones(Game * p2game);
 static void drawObstacles(Game * p2game);
@@ -65,6 +65,8 @@ static void drawPaused (Game* p2game);
 static void drawVictory(Game* p2game);
 static void drawScore(Game* p2game);
 static void drawLives(Game* p2game);
+static void drawFinishBoxes(Game* p2game);
+static void cloneFrog(Game* p2game);
 //static void drawTop10 (Game* p2game);
 
 
@@ -111,6 +113,8 @@ void frontendInit(void) {
     al_register_event_source(queue, al_get_keyboard_event_source());
 
     al_register_event_source(queue, al_get_display_event_source(display));
+    white = al_map_rgb(255, 255, 255);
+    pink = al_map_rgb(255, 105, 180);
 
     loadFiles();
 }
@@ -165,7 +169,8 @@ void frontendRender(Game * game){
     drawFrog(game);
     drawScore(game);
     drawLives(game);
-    drawSafeBoxes(game);
+    drawFinishBoxes(game);
+    cloneFrog(game);
     break;
 
     case GAME_OVER:
@@ -305,7 +310,7 @@ static void drawObstacles( Game* p2game){
             }
             //Dibujamos el tronco con el largo correspondiente
             al_draw_scaled_bitmap(floater_trunk, 0, 0, al_get_bitmap_width(floater_trunk),
-                al_get_bitmap_height(floater_trunk), x, y, new_lenght, new_height, flag_direction);
+                al_get_bitmap_height(floater_trunk), x, y, new_lenght, new_height,flag_direction );
         }
 
     }
@@ -358,8 +363,6 @@ static void drawMainMenu (Game* p2game){
     int x_menu;
     int x_center = MARGIN + (SCALE*MAP_WIDTH)/2; //el medio de la pantalla
 
-    ALLEGRO_COLOR white = al_map_rgb(255, 255, 255);
-    ALLEGRO_COLOR green = al_map_rgb(86, 176, 0);
     ALLEGRO_COLOR color;
 
     int option_selected = (p2game -> state.menu.selected);
@@ -370,23 +373,21 @@ static void drawMainMenu (Game* p2game){
 
     al_draw_text(very_big_font, white, x_center, 150, ALLEGRO_ALIGN_CENTER, "FROGGER");
 
-    color = (option_selected == MENU_TITLE)? green : white;
+    color = (option_selected == MENU_TITLE)? pink : white;
     al_draw_text(big_font, color, x_menu, y_menu, ALLEGRO_ALIGN_LEFT, "MENU");
 
-    color = (option_selected == MENU_PLAY)? green : white;
+    color = (option_selected == MENU_PLAY)? pink : white;
     al_draw_text(medium_font, color, x_menu, y_option1, ALLEGRO_ALIGN_LEFT, "Play");
 
-    color = (option_selected == MENU_POINTS)? green : white;
+    color = (option_selected == MENU_POINTS)? pink : white;
     al_draw_text(medium_font, color, x_menu, y_option1 + spacing2, ALLEGRO_ALIGN_LEFT, "Best scores");
 
-    color = (option_selected == MENU_EXIT)? green : white;
+    color = (option_selected == MENU_EXIT)? pink : white;
     al_draw_text(medium_font, color, x_menu, y_option1 + 2*spacing2, ALLEGRO_ALIGN_LEFT, "Exit");
 }
 
 
 static void drawGameOver (Game* p2game){
-    ALLEGRO_COLOR white = al_map_rgb(255, 255, 255);
-    ALLEGRO_COLOR green = al_map_rgb(86, 176, 0);
     ALLEGRO_COLOR color;
 
     int option_selected = (p2game -> state.gameOver.selected);
@@ -406,17 +407,16 @@ static void drawGameOver (Game* p2game){
 
     al_draw_text(very_big_font, white, x_center, y_title, ALLEGRO_ALIGN_CENTER, "GAME OVER");
 
-    color = (option_selected == GAME_OVER_MENU)? green : white;
+    color = (option_selected == GAME_OVER_MENU)? pink : white;
     al_draw_text(medium_font, color, x_options, y_options, ALLEGRO_ALIGN_LEFT, "Back to menu");
 
-    color = (option_selected == GAME_OVER_EXIT)? green : white;
+    color = (option_selected == GAME_OVER_EXIT)? pink : white;
     al_draw_text(medium_font, color, x_options, y_options + spacing2, ALLEGRO_ALIGN_LEFT, "Exit");
 }
 
 
 static void drawVictory(Game* p2game){
-    ALLEGRO_COLOR white = al_map_rgb(255, 255, 255);
-    ALLEGRO_COLOR green = al_map_rgb(86, 176, 0);
+
     ALLEGRO_COLOR color;
 
     int option_selected = (p2game -> state.victory.selected);
@@ -436,17 +436,16 @@ static void drawVictory(Game* p2game){
 
     al_draw_text(very_big_font, white, x_center, y_title, ALLEGRO_ALIGN_CENTER, "YOU WIN");
 
-    color = (option_selected == VICTORY_MENU)? green : white;
+    color = (option_selected == VICTORY_MENU)? pink : white;
     al_draw_text(medium_font, color, x_options, y_options, ALLEGRO_ALIGN_LEFT, "Back to menu");
 
-    color = (option_selected == VICTORY_EXIT)? green : white;
+    color = (option_selected == VICTORY_EXIT)? pink : white;
     al_draw_text(medium_font, color, x_options, y_options + spacing2, ALLEGRO_ALIGN_LEFT, "Exit");
 }
 
 
 static void drawPaused (Game* p2game){
-    ALLEGRO_COLOR white = al_map_rgb(255, 255, 255);
-    ALLEGRO_COLOR green = al_map_rgb(86, 176, 0);
+
     ALLEGRO_COLOR color;
 
     int option_selected = (p2game -> state.paused.selected);
@@ -466,19 +465,18 @@ static void drawPaused (Game* p2game){
 
     al_draw_text(big_font, white, x_center, y_title, ALLEGRO_ALIGN_CENTER, "GAME PAUSED");
 
-    color = (option_selected == PAUSED_MENU)? green : white;
+    color = (option_selected == PAUSED_MENU)? pink : white;
     al_draw_text(medium_font, color, x_options, y_options, ALLEGRO_ALIGN_LEFT, "Back to menu");
 
-    color = (option_selected == PAUSED_PLAY)? green : white;
+    color = (option_selected == PAUSED_PLAY)? pink : white;
     al_draw_text(medium_font, color, x_options, y_options + spacing2, ALLEGRO_ALIGN_LEFT, "Continue");
 
-    color = (option_selected == PAUSED_EXIT)? green : white;
+    color = (option_selected == PAUSED_EXIT)? pink : white;
     al_draw_text(medium_font, color, x_options, y_options + 2*spacing2, ALLEGRO_ALIGN_LEFT, "Exit");
 }
 
 static void drawScore(Game* p2game){
     int score = ( p2game->score);
-    ALLEGRO_COLOR white = al_map_rgb(255, 255, 255);
     int spacing = 30;
     char score_as_string[11];
     snprintf(score_as_string, sizeof(score_as_string), "SCORE: %d", score);
@@ -496,17 +494,30 @@ static void drawLives(Game* p2game){
 
 
 //hay que ver cuantas safe boxes son por nivel, capaz hay que modificar el bucle
-static void drawSafeBoxes(Game* p2game){
+static void drawFinishBoxes(Game* p2game){
     
     int i, x, y;
 
     for (i=0 ; i<5 ; i++){
-        x = (p2game -> level.finishBoxes[i].x);
-        y = ROW(p2game -> level.finishBoxes[i].y);
+        x = (p2game -> level.finishBoxes[i].x)*SCALE;
+        y = ROW(MAP_HEIGHT+1)*SCALE;
         al_draw_scaled_bitmap(safe_box, 0, 0, al_get_bitmap_width(safe_box), al_get_bitmap_height(safe_box), x, y, SCALE, SCALE, 0);
     }
 }
 
+static void cloneFrog(Game * p2game){
+    int i, x, y,zones_occupied;
+
+    for (i=0,zones_occupied = 0; i<FINISH_BOX_COUNT ; i++){
+        if((p2game -> level.finishBoxes[i].occupied) && (zones_occupied < FINISH_BOX_COUNT)){
+            x = (p2game -> level.finishBoxes[i].x)*SCALE;
+            y = ROW(MAP_HEIGHT+1)*SCALE;
+                al_draw_scaled_bitmap(frog, 0, 0, al_get_bitmap_width(frog), al_get_bitmap_height(frog), x, y, SCALE, SCALE, 0);
+                zones_occupied++;
+            }
+    }
+
+}
 
 //INCOMPLETA LA PARTE DE OBTENER LOS PUNTAJES Y LAS COORDENADAS
 /*static void drawTop10(Game* p2game){
