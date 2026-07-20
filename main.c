@@ -1,4 +1,4 @@
-#include "frontend.h"
+#include "allegroFrontend.h"
 #include "game.h"
 #include <allegro5/allegro.h>
 
