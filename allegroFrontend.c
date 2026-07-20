@@ -141,15 +141,10 @@ Input frontendGetInput(void){
                 case ALLEGRO_KEY_LEFT:  return LEFT;
                 case ALLEGRO_KEY_RIGHT: return RIGHT;
                 case ALLEGRO_KEY_ENTER: return SELECT;
-                //case ALLEGRO_EVENT_DISPLAY_CLOSE: return ;
+                //case ALLEGRO_EVENT_DISPLAY_CLOSE: return EXIT;
                 default: return NONE;
             }
         }
-        /*else if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-            al_destroy_event_queue(queue);
-            al_destroy_display(display);
-            return ...; //OJO QUE NO EXISTE EN LA STRUCT ESTE CASO
-        } */
        else {
         return NONE;
        }
