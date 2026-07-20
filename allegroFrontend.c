@@ -79,6 +79,7 @@ static void drawLives(Game* p2game);
 static void drawFinishBoxes(Game* p2game);
 static void cloneFrog(Game* p2game);
 static void drawTop10(Game* p2game);
+static void top10_notify(Game* p2game, int x, int y);
 
 /*******************************************************************************
  *******************************************************************************
@@ -168,6 +169,7 @@ Input frontendGetInput(void){
                 case ALLEGRO_KEY_LEFT:  return LEFT;
                 case ALLEGRO_KEY_RIGHT: return RIGHT;
                 case ALLEGRO_KEY_ENTER: return SELECT;
+                //case ALLEGRO_EVENT_DISPLAY_CLOSE: return ;
                 default: return NONE;
             }
         }
@@ -239,6 +241,7 @@ void frontendRender(Game * game){
 
 void frontendDestroy(void){
 
+    //Liberamos memoria al finalizar el programa
     if (car) al_destroy_bitmap(car);
     if (truck) al_destroy_bitmap(truck);
     if (trophy) al_destroy_bitmap(trophy);
@@ -246,6 +249,9 @@ void frontendDestroy(void){
     if (frog) al_destroy_bitmap(frog);
     if (floater_trunk) al_destroy_bitmap(floater_trunk);
     if (pause_img) al_destroy_bitmap(pause_img);
+    if (heart) al_destroy_bitmap(heart);
+    if (safe_box) al_destroy_bitmap(safe_box);
+    if (floater_leaf) al_destroy_bitmap(floater_leaf);
 
     
     if (very_big_font) al_destroy_font(very_big_font);
@@ -267,8 +273,8 @@ void frontendDestroy(void){
 static void drawZones(Game * p2game){
     
     int i, y1, y2;
-    int x1 = MARGIN;
-    int x2 = MARGIN + MAP_WIDTH*SCALE;
+    int x1 = 0;
+    int x2 = MAP_WIDTH*SCALE;
     ALLEGRO_COLOR road_colour = al_map_rgb(45, 45, 48);
     ALLEGRO_COLOR water_colour = al_map_rgb(0, 119, 190);
     ALLEGRO_COLOR safe_colour = al_map_rgb(46, 139, 87);
@@ -311,9 +317,9 @@ static void drawObstacles( Game* p2game){
 
     //Bucle generador de vehículos
     for (i=0 ; i<MAX_OBSTACLES ; i++){
-        //si la entidad está activa
+        //Si la entidad está activa, la dibujamos en la pantalla
         if (p2game -> entities.obstacles[i].active){
-            x = (p2game -> entities.obstacles[i].x)*SCALE + MARGIN;
+            x = (p2game -> entities.obstacles[i].x)*SCALE;
             y = ROW((p2game -> entities.obstacles[i].y))*SCALE;
 
             //en los png los vehículos apuntan para la izquierda
@@ -336,9 +342,9 @@ static void drawObstacles( Game* p2game){
 
     //Bucle generador de flotadores
     for (i=0 ; i<MAX_FLOATERS ; i++){
-        //si la entidad está activa
+        //Si la entidad está activa, la dibujamos en la pantalla
         if (p2game -> entities.floaters[i].active){
-            x = (p2game -> entities.floaters[i].x)*SCALE + MARGIN;
+            x = (p2game -> entities.floaters[i].x)*SCALE;
             y = ROW((p2game -> entities.floaters[i].y))*SCALE;
             new_lenght = (p2game -> entities.floaters[i].length)*SCALE;
             new_height = SCALE;
@@ -402,7 +408,7 @@ static void drawMainMenu (Game* p2game){
     int y_menu = 430;
     int y_option1 = y_menu + spacing1;
     int x_menu;
-    int x_center = MARGIN + (SCALE*MAP_WIDTH)/2; //el medio de la pantalla
+    int x_center =(SCALE*MAP_WIDTH)/2; //el medio de la pantalla
 
     ALLEGRO_COLOR color;
 
@@ -436,7 +442,7 @@ static void drawGameOver (Game* p2game){
     int y_title = 400;
     int y_options = y_title + spacing1;
     int x_options;
-    int x_center =MARGIN + (SCALE*MAP_WIDTH)/2; //el medio de la pantalla
+    int x_center =(SCALE*MAP_WIDTH)/2; //el medio de la pantalla
     int y_skull = y_title/2;
 
     int score = ( p2game->score);
@@ -458,8 +464,10 @@ static void drawGameOver (Game* p2game){
 
     snprintf(score_as_string, sizeof(score_as_string), "TOTAL SCORE: %d", score);
     al_draw_text(big_font, white, x_options, y_options + 2*spacing1, ALLEGRO_ALIGN_LEFT,score_as_string);
-}
 
+    //si el usuario es top10, notificamos
+    top10_notify(p2game, x_options, y_options + 3*spacing1);
+}
 
 static void drawVictory(Game* p2game){
 
@@ -471,7 +479,7 @@ static void drawVictory(Game* p2game){
     int y_title = 400;
     int y_options = y_title + spacing1;
     int x_options;
-    int x_center =MARGIN + (SCALE*MAP_WIDTH)/2; //el medio de la pantalla
+    int x_center =(SCALE*MAP_WIDTH)/2; //el medio de la pantalla
     int y_trophy = y_title/2;
 
     int title_width = al_get_text_width(very_big_font, "YOU WIN");
@@ -493,6 +501,10 @@ static void drawVictory(Game* p2game){
 
     snprintf(score_as_string, sizeof(score_as_string), "TOTAL SCORE: %d", score);
     al_draw_text(big_font, white, x_options, y_options + 2*spacing1, ALLEGRO_ALIGN_LEFT,score_as_string);
+
+    //si el usuario es top10, notificamos
+    top10_notify(p2game, x_options, y_options + 3*spacing1);
+    
 }
 
 
@@ -506,7 +518,7 @@ static void drawPaused (Game* p2game){
     int y_title = 600;
     int y_options = y_title + spacing1;
     int x_options;
-    int x_center =MARGIN + (SCALE*MAP_WIDTH)/2; //el medio de la pantalla
+    int x_center =(SCALE*MAP_WIDTH)/2; //el medio de la pantalla
     int y_image = y_title/3;
 
     int title_width = al_get_text_width(big_font, "GAME PAUSED");
@@ -544,8 +556,6 @@ static void drawLives(Game* p2game){
     }
 }
 
-
-//hay que ver cuantas safe boxes son por nivel, capaz hay que modificar el bucle
 static void drawFinishBoxes(Game* p2game){
     
     int i, x, y;
@@ -571,14 +581,13 @@ static void cloneFrog(Game * p2game){
 
 }
 
-//INCOMPLETA LA PARTE DE OBTENER LOS PUNTAJES Y LAS COORDENADAS
 static void drawTop10(Game* p2game){
 
     ALLEGRO_COLOR color;
 
     int i;
-    char position[5];//arreglo para guardar posicion en el podio (ej: #1, #2, ...)
-    char score_as_string[30];
+    char position[5]; //string #1, #2, ...
+    char score_as_string[30]; //string para poner puntaje en pantalla
     int *pScores = p2game->scoresTop10;
     int selected = p2game->state.points.selected;
 
@@ -622,4 +631,18 @@ static void drawTop10(Game* p2game){
 
     color = (selected == POINTS_EXIT)? pink : white;
     al_draw_text(medium_font, color, x_trophy1,y_top1 + (TOP10_SIZE+3)*spacing2, ALLEGRO_ALIGN_LEFT, "Exit");
+}
+
+static void top10_notify(Game* p2game, int x, int y){
+    int i;
+
+    for (i=0 ; i<TOP10_SIZE ; i++){
+        if ((p2game -> scoresTop10[i]) == (p2game -> score) ){
+            al_draw_text(medium_font, pink, x, y, ALLEGRO_ALIGN_CENTER,
+                "CONGRATULATIONS! YOU ARE IN THE TOP 10!");
+    
+            return;
+        }
+    }
+    return;
 }
