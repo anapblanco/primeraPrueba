@@ -398,6 +398,9 @@ static void drawGameOver (Game* p2game){
     int x_center =MARGIN + (SCALE*MAP_WIDTH)/2; //el medio de la pantalla
     int y_skull = y_title/2;
 
+    int score = ( p2game->score);
+    char score_as_string[20];
+
     int title_width = al_get_text_width(very_big_font, "GAME OVER");
     int skull_width = al_get_bitmap_width(skull);
     x_options = x_center - title_width/2;
@@ -411,6 +414,9 @@ static void drawGameOver (Game* p2game){
 
     color = (option_selected == GAME_OVER_EXIT)? pink : white;
     al_draw_text(medium_font, color, x_options, y_options + spacing2, ALLEGRO_ALIGN_LEFT, "Exit");
+
+    snprintf(score_as_string, sizeof(score_as_string), "TOTAL SCORE: %d", score);
+    al_draw_text(big_font, white, x_options, y_options + 2*spacing1, ALLEGRO_ALIGN_LEFT,score_as_string);
 }
 
 
@@ -431,6 +437,9 @@ static void drawVictory(Game* p2game){
     int trophy_width = al_get_bitmap_width(trophy);
     x_options = x_center - title_width/2;
 
+    int score = ( p2game->score);
+    char score_as_string[20];
+
     al_draw_bitmap(trophy, x_center- trophy_width/2, y_trophy, 0);
 
     al_draw_text(very_big_font, white, x_center, y_title, ALLEGRO_ALIGN_CENTER, "YOU WIN");
@@ -440,6 +449,9 @@ static void drawVictory(Game* p2game){
 
     color = (option_selected == VICTORY_EXIT)? pink : white;
     al_draw_text(medium_font, color, x_options, y_options + spacing2, ALLEGRO_ALIGN_LEFT, "Exit");
+
+    snprintf(score_as_string, sizeof(score_as_string), "TOTAL SCORE: %d", score);
+    al_draw_text(big_font, white, x_options, y_options + 2*spacing1, ALLEGRO_ALIGN_LEFT,score_as_string);
 }
 
 
@@ -519,8 +531,9 @@ static void cloneFrog(Game * p2game){
 }
 
 //INCOMPLETA LA PARTE DE OBTENER LOS PUNTAJES Y LAS COORDENADAS
-/*static void drawTop10(Game* p2game){
-    char* scores[10];
+static void drawTop10(Game* p2game){
+    
+    int *pScores = p2game->scoresTop10;
 
     //agregamos el #1, 2 3,... antes del score
 
