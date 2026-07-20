@@ -12,8 +12,7 @@ TARGET := frogger
 
 # Archivos fuente (modularizados)
 SRCS := main.c game.c entities.c interactions.c levels.c \
-	    frontendInit.c frontendRender.c frontendMenus.c frontendInput.c frontendCleanup.c \
-	    top10.c
+	    allegroFrontend.c allegroPlay.c allegroMenus.c top10.c
 
 # Archivos objeto generados a partir de los archivos fuente
 OBJS := $(SRCS:.c=.o)
@@ -32,7 +31,7 @@ ifeq ($(strip $(ALLEGRO_CFLAGS)$(ALLEGRO_LIBS)),)
 endif
 
 # Reglas principales
-.PHONY: all clean
+.PHONY: all run clean
 
 # Regla para compilar todo
 all: $(TARGET)
@@ -44,6 +43,10 @@ $(TARGET): $(OBJS)
 # Regla para compilar archivos fuente en archivos objeto
 %.o: %.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(ALLEGRO_CFLAGS) -c $< -o $@
+
+# Compila y ejecuta el juego desde la carpeta del proyecto, donde están los recursos.
+run: $(TARGET)
+	./$(TARGET)
 
 # Regla para limpiar los archivos generados
 clean:
