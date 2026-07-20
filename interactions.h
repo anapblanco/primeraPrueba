@@ -38,7 +38,7 @@ int manageInteractions(Game* game);
  * @return devuelve un entero para control de errores
 */
 
-int updateScore(Frog *frog, uint8_t *score, CheckpointId checkpoint);
+int updateScore(Frog *frog, uint16_t *score, CheckpointId checkpoint);
 /**
  * @brief TODO: Esta funcion actualiza el puntaje cada vez que la rana llega a una zona segura. 
  * @param frog Recibe el puntero a la rana para analizar si llego a una zona segura

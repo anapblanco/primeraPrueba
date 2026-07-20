@@ -56,7 +56,7 @@ static Level level2={
         {NO_CHECKPOINT, NULL, START, 0, 0, 0, 0, DIR_LEFT},
         {NO_CHECKPOINT, NULL, START, 0, 0, 0, 0, DIR_LEFT},
 
-        {NO_CHECKPOINT, NULL, ROAD, 3, TRUCK_LENGTH, MAX_GAP, SLOW, DIR_RIGHT},
+        {NO_CHECKPOINT, NULL, ROAD, 3, TRUCK_LENGTH, MAX_GAP, MEDIUM_SPEED, DIR_RIGHT},
         {NO_CHECKPOINT, NULL, ROAD, 3, CAR_LENGTH, MEDIUM_GAP, SLOW, DIR_LEFT},
         {NO_CHECKPOINT, NULL, ROAD, 3, CAR_LENGTH, MEDIUM_GAP, SLOW, DIR_RIGHT},
         {NO_CHECKPOINT, NULL, ROAD, 3, TRUCK_LENGTH, MEDIUM_GAP, SLOW, DIR_LEFT},
@@ -221,6 +221,7 @@ static void loadFinishBoxes(Level* level);
             case LEVEL_1:
                 game->level = level2; //Igualamos el nivel a la estrucutra predeterminada del nivel correspondiente
                 game->level.entities = &game->entities; //Apuntamos el puntero de entidades a las entidades del juego
+                initFrog(&game->frog);
                 if((errorType = loadLevel(&game->level))){ //Se inicializan las entidades del juego con las caracteristicas del nivel
                     return errorType;
                 }
@@ -230,6 +231,7 @@ static void loadFinishBoxes(Level* level);
             case LEVEL_2:
                 game->level = level3;
                 game->level.entities = &game->entities;
+                initFrog(&game->frog);
                 if((errorType = loadLevel(&game->level))){ //Se inicializan las entidades del juego con las caracteristicas del nivel
                     return errorType;
                 }
@@ -237,6 +239,7 @@ static void loadFinishBoxes(Level* level);
             break;
 
             default:
+            game->state.id = VICTORY;
                 return 0;
         }
     }

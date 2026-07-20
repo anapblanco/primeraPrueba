@@ -95,7 +95,7 @@
  
     GameEntities entities;
  
-    uint8_t score;
+    uint16_t score;
     
     int scoresTop10[TOP10_SIZE]; // Array to hold the top 10 scores
  

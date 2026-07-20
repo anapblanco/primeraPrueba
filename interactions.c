@@ -112,7 +112,7 @@ int manageInteractions(Game *game){
  return 0;
 }
 
-int updateScore(Frog *frog, uint8_t *score, CheckpointId checkpoint){
+int updateScore(Frog *frog, uint16_t *score, CheckpointId checkpoint){
     if(frog == NULL){
         return ERR_INVALID_FROG_POINTER;
     }

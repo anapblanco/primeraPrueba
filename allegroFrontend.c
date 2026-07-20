@@ -373,8 +373,7 @@ static void drawMainMenu (Game* p2game){
 
     al_draw_text(very_big_font, white, x_center, 150, ALLEGRO_ALIGN_CENTER, "FROGGER");
 
-    color = (option_selected == MENU_TITLE)? pink : white;
-    al_draw_text(big_font, color, x_menu, y_menu, ALLEGRO_ALIGN_LEFT, "MENU");
+    al_draw_text(big_font, white, x_menu, y_menu, ALLEGRO_ALIGN_LEFT, "MENU");
 
     color = (option_selected == MENU_PLAY)? pink : white;
     al_draw_text(medium_font, color, x_menu, y_option1, ALLEGRO_ALIGN_LEFT, "Play");
@@ -508,7 +507,7 @@ static void drawFinishBoxes(Game* p2game){
 static void cloneFrog(Game * p2game){
     int i, x, y,zones_occupied;
 
-    for (i=0,zones_occupied = 0; i<FINISH_BOX_COUNT ; i++){
+    for (i=0,zones_occupied = 1; i<FINISH_BOX_COUNT ; i++){
         if((p2game -> level.finishBoxes[i].occupied) && (zones_occupied < FINISH_BOX_COUNT)){
             x = (p2game -> level.finishBoxes[i].x)*SCALE;
             y = ROW(MAP_HEIGHT+1)*SCALE;
