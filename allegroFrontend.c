@@ -67,7 +67,7 @@ static void drawScore(Game* p2game);
 static void drawLives(Game* p2game);
 static void drawFinishBoxes(Game* p2game);
 static void cloneFrog(Game* p2game);
-//static void drawTop10 (Game* p2game);
+static void drawTop10(Game* p2game);
 
 
 void frontendInit(void) {
@@ -182,7 +182,7 @@ void frontendRender(Game * game){
     break;
 
     case POINTS:
-    //drawTop10(game);
+    drawTop10(game);
     break;
 
     case PAUSED:
@@ -532,99 +532,50 @@ static void cloneFrog(Game * p2game){
 
 //INCOMPLETA LA PARTE DE OBTENER LOS PUNTAJES Y LAS COORDENADAS
 static void drawTop10(Game* p2game){
-    
-    int *pScores = p2game->scoresTop10;
 
-    //agregamos el #1, 2 3,... antes del score
-
-    //OJO DEFINICION DE X E Y PROVISORIA
-    int i, x= 1, y =1;
-    int option_selected = (p2game -> state.points.selected);
-    ALLEGRO_COLOR white = al_map_rgb(255, 255, 255);
-    ALLEGRO_COLOR green = al_map_rgb(86, 176, 0);
-    ALLEGRO_COLOR color = white;
-
-    al_draw_text(big_font, white, x, y, ALLEGRO_ALIGN_CENTER, "TOP 10");
-
-    for (i=0 ; i<10 ; i++){
-        int x;
-        int y;
-        al_draw_text(medium_font, color, x, y, ALLEGRO_ALIGN_LEFT, scores[i]);
-    }
-
-    color = (option_selected == POINTS_MENU)? green : white;
-    al_draw_text(medium_font, color, x, y, ALLEGRO_ALIGN_LEFT, "Back to menu");
-
-    color = (option_selected == POINTS_EXIT)? green : white;
-    al_draw_text(medium_font, color, x, y, ALLEGRO_ALIGN_LEFT, "Exit");
-
-}*/
-
-/* del codigo de ana
-option = (game->state).points.selected;			
-switch (option) {	
-    case POINTS_TITLE:
-        drawMSG(msgs_arr[MSG_TOP_10]);
-    break;
-    
-    case POINT_1: case POINT_2: case POINT_3: case POINT_4: case POINT_5:
-    case POINT_6: case POINT_7: case POINT_8: case POINT_9: case POINT_10:
-        drawScore(option-POINT_1, (game->scoresTop10)[option-POINT_1]);
-    break;
-    
-    case POINTS_MENU:
-        drawMSG(msgs_arr[MSG_GO_HOME]);
-    break;
-    
-    case POINTS_EXIT:
-        drawMSG(msgs_arr[MSG_EXIT]);
-    break; */
-
-     ALLEGRO_COLOR white = al_map_rgb(255, 255, 255);
-    ALLEGRO_COLOR green = al_map_rgb(86, 176, 0);
     ALLEGRO_COLOR color;
-    int x_center = MARGIN + (SCALE*MAP_WIDTH)/2;
-    int y_title = 60;
-    int spacing_trophy = 100;
-    int spacing1 = 60;
-    int spacing2 = 70;
+
     int i;
     char position[5];//arreglo para guardar posicion en el podio (ej: #1, #2, ...)
     char score_as_string[30];
+    int *pScores = p2game->scoresTop10;
+    int selected = p2game->state.points.selected;
+    
+    // Constantes de diseño
+    int x_center = (SCALE*MAP_WIDTH)/2;
+    int y_title = 100;
+    int spacing_trophy = 100;
+    int spacing1 = 60;
+    int spacing2 = 70;
 
     int orig_width = al_get_bitmap_width(trophy);
     int orig_height = al_get_bitmap_height(trophy);
 
+    // Dimensiones para centrado
     int title_width = al_get_text_width(big_font, "TOP 10");
     int title_height = al_get_font_line_height(big_font);
 
+    // Dimensiones para centrado
     int x_trophy1 = x_center - title_width/2 - spacing_trophy - al_get_bitmap_width(trophy);
     int x_trophy2 = x_center + title_width/2 + spacing_trophy;
     int y_top1 = y_title + title_height + spacing1;
-    int x_options = x_center + title_width/2, y_options= (MAP_HEIGHT*SCALE)/2;
 
-
+    // 1. Dibujar Título y Trofeos
     al_draw_text(big_font, white, x_center, y_title, ALLEGRO_ALIGN_CENTER, "TOP 10");
     al_draw_scaled_bitmap(trophy, 0, 0, orig_width, orig_height, x_trophy1, y_title, title_height, title_height, 0);
     al_draw_scaled_bitmap(trophy, 0, 0, orig_width, orig_height, x_trophy2, y_title, title_height, title_height, 0);
 
-    //caso #1 va con distinto spacing
-    i=0;
-        snprintf(score_as_string, 30, "%d", top10[i]); //guarda cada score como string
+    // 2. Dibujar Lista del Top 10
+    for (i = 0; i < TOP10_SIZE; i++){
+        snprintf(score_as_string, 30, "%d", pScores[i]);
         snprintf(position, 5, "#%d", i + 1);
-        al_draw_text(small_font, white, x_trophy1, y_top1, ALLEGRO_ALIGN_LEFT, position);
-        al_draw_text(small_font, white, x_trophy2 + title_height, y_top1, ALLEGRO_ALIGN_RIGHT, score_as_string);
-
-    for (i=1 ; i<10 ; i++){
-        snprintf(score_as_string, 30, "%d", top10[i]); //guarda cada score como string
-        snprintf(position, 5, "#%d", i + 1);
-        al_draw_text(small_font, white, x_trophy1, y_top1 + (i)*spacing2, ALLEGRO_ALIGN_LEFT, position);
-        al_draw_text(small_font, white, x_trophy2 + title_height, y_top1 +(i)*spacing2, ALLEGRO_ALIGN_RIGHT, score_as_string);
+        al_draw_text(small_font, white, x_trophy1, y_top1 + i*spacing2, ALLEGRO_ALIGN_LEFT, position);
+        al_draw_text(small_font, white, x_trophy2 + title_height, y_top1 + i*spacing2, ALLEGRO_ALIGN_RIGHT, score_as_string);
     }
+    // 3. Dibujar Opciones de Menú
+    color = ((selected == POINTS_MENU) || (selected == POINTS_TITLE))? pink : white;
+    al_draw_text(medium_font, color, x_trophy1, y_top1 + (TOP10_SIZE +2)*spacing2, ALLEGRO_ALIGN_LEFT, "Back to menu");
 
-    color = ((selected == POINTS_MENU) || (selected == POINTS_TITLE))? green : white;
-    al_draw_text(medium_font, color, x_trophy2, y_options, ALLEGRO_ALIGN_CENTER, "Back to menu");
-
-    color = (selected == POINTS_EXIT)? green : white;
-    al_draw_text(medium_font, color, x_options, y_options + spacing1, ALLEGRO_ALIGN_CENTER, "Exit");
+    color = (selected == POINTS_EXIT)? pink : white;
+    al_draw_text(medium_font, color, x_trophy1,y_top1 + (TOP10_SIZE+3)*spacing2, ALLEGRO_ALIGN_LEFT, "Exit");
 }
